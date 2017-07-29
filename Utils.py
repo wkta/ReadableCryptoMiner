@@ -1,12 +1,18 @@
 import time
-
+from main import *
 
 LEVEL_PROTOCOL  = 'protocol'
 LEVEL_INFO      = 'info'
 LEVEL_DEBUG     = 'debug'
 LEVEL_ERROR     = 'error'
 
+DEBUG = False
+
 def log(message, level):
+
+	if not DEBUG and level in [LEVEL_DEBUG, LEVEL_PROTOCOL]:
+		return
+
 	print ("[%s] %s" % (time.strftime("%Y-%m-%d %H:%M:%S"), message))
 
 

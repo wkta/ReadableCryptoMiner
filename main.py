@@ -5,12 +5,8 @@
 
 
 from Miner import *
-from Cryptonight import *
-
-URL = None
-USERNAME = None
-PASSWORD = "X"
-ALGORITHM = "cryptonight"
+import Utils
+import argparse
 
 
 def test_job(miner):
@@ -35,11 +31,21 @@ def test_job(miner):
 
 	#expect = {"id": "523289590119384", "job_id": "218283583596348", "nonce": "24000082", "result": "df6911d024c62d910e53b012f6b8ed0eedfaf53f60819e261207d91044258202"}
 
-
 if __name__ == '__main__':
-	if None in [URL, USERNAME, PASSWORD, ALGORITHM]:
-		sys.exit("Error: fill out URL, USERNAME, PASSWORD and ALGORITHM variables")
+	parser = argparse.ArgumentParser(description = "CPU-Miner for cryptocurrency using the cryptonight pow algorithm and the stratum protocol (JSON RPC2)")
 
-	miner = Miner(URL, USERNAME, PASSWORD, ALGORITHM)
+	parser.add_argument("-a", "--algo", default = "cryptonight", choices = ["cryptonight"], help = "hashing algorithm to use for proof of work")
+	parser.add_argument("-o", "--url", help = "stratum mining server url (eg: stratum+tcp://foobar.com:3333)")
+	parser.add_argument("-u", "--user", dest = "username", default = "", help = "username for mining server")
+	parser.add_argument("-p", "--pass", dest = "password", default = "", help = "password for mining server")
+	parser.add_argument('-t', '--thread', default ="1", help = "Number of mining threads to start")
+	parser.add_argument('-d', '--debug', help = "show extra debug information")
+
+	options = parser.parse_args(sys.argv[1:])
+
+	if options.debug: 
+		Utils.DEBUG = True
+
+	miner = Miner(options.url, options.username, options.password, options.algo, int(options.thread))
 	miner.serve_forever()
 	

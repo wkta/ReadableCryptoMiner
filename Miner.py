@@ -18,12 +18,13 @@ class Miner(JsonRpc2Client):
 	class MinerAuthenticationException(JsonRpc2Client.RequestReplyException): pass
 
 
-	def __init__(self, url, username, password, algorithm):
+	def __init__(self, url, username, password, algorithm, nb_threads):
 		JsonRpc2Client.__init__(self)
 
 		self._url = url
 		self._username = username
 		self._password = password
+		self.nb_threads = nb_threads
 
 		self._subscription = SubscriptionByAlgorithm[algorithm]()
 
@@ -112,14 +113,13 @@ class Miner(JsonRpc2Client):
 				for result in job.mine(nonce_start=nonce_start, nonce_stride=nonce_stride):
 					self.send(method = "submit", params = result)
 					self._submitted_shares += 1
-					log("Found share: " + str(result), LEVEL_INFO)
+					log("Found share: " + str(result), LEVEL_DEBUG)
 					log("Hashrate: {}".format(human_readable_hashrate(job.hashrate)), LEVEL_INFO)
 			except Exception as e:
 				log("ERROR: {}".format(e), LEVEL_ERROR)
 
-		nb_threads = 4
-		for n in range(nb_threads):
-			thread = threading.Thread(target=run, args=(self._job, n, nb_threads))
+		for n in range(self.nb_threads):
+			thread = threading.Thread(target=run, args=(self._job, n, self.nb_threads))
 			thread.daemon = True
 			thread.start()
 
