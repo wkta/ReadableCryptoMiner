@@ -2,3 +2,4 @@
 __pycache__/
 cryptonight_lib/project/
 *.log
+*.bat
