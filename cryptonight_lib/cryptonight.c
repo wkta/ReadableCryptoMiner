@@ -238,7 +238,13 @@ static void cryptonight_hash_ctx(void* output, const void* input, int len, struc
 }
 
 
-__declspec(dllexport) void cryptonight_hash(void* output, void* input, int len) {
+#if defined(_WIN32)
+#define LIB_EXPORT __declspec(dllexport)
+#else // _WIN32
+#define LIB_EXPORT
+#endif
+
+LIB_EXPORT void cryptonight_hash(void* output, void* input, int len) {
 	struct cryptonight_ctx *ctx = (struct cryptonight_ctx*)malloc(sizeof(struct cryptonight_ctx));
 
 	cryptonight_hash_ctx(output, input, len, ctx);
