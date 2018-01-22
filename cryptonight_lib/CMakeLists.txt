@@ -28,7 +28,6 @@ set (HEADER_FILES
 )
 
 set (SOURCE_FILES
-	main.c
 	cryptonight.c
 
 	crypto/aesb.c
