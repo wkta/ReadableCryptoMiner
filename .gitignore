@@ -1,5 +1,10 @@
 .vs/
 __pycache__/
 cryptonight_lib/project/
+CMakeCache/
+CMakeCache.txt
+CMakeFiles/
+CMakeFiles/
+*.cmake
 *.log
 *.bat

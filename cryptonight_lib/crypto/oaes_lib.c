@@ -38,7 +38,14 @@ static const char _NR[] = {
 #include "../miner.h"
 
 #include <stddef.h>
+
 #include <time.h>
+#ifdef _WIN32
+# include "../compat/time.h"
+#else
+# include <sys/time.h>
+#endif
+
 
 // Only used by ftime, which was removed from POSIX 2008.
 struct timeb {
@@ -55,8 +62,6 @@ struct timezone {
 };
 #endif
 
-#include <winsock.h>
-#include "../compat/time.h"
 // This was removed from POSIX 2008.
 static int ftime(struct timeb* tb) {
   struct timeval  tv;
@@ -88,6 +93,7 @@ static int ftime(struct timeb* tb) {
 #include <stdio.h>
 
 #ifdef WIN32
+#include <winsock.h>
 #include <process.h>
 #define getpid _getpid
 #else

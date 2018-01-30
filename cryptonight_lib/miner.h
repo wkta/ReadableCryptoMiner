@@ -37,6 +37,12 @@
 # endif
 #endif
 
+#ifdef _WIN32
+# define LIB_EXPORT __declspec(dllexport)
+#else // _WIN32
+# define LIB_EXPORT
+#endif
+
 #ifdef HAVE_ALLOCA_H
 # include <alloca.h>
 #elif !defined alloca
@@ -450,7 +456,7 @@ void blake2b_hash(void *output, const void *input);
 void bmwhash(void *output, const void *input);
 void c11hash(void *output, const void *input);
 void cryptolight_hash(void* output, const void* input, int len);
-__declspec(dllexport) void cryptonight_hash(void* output, const void* input, int len);
+LIB_EXPORT void cryptonight_hash(void* output, void* input, int len) ;
 void decred_hash(void *output, const void *input);
 void droplp_hash(void *output, const void *input);
 void groestlhash(void *output, const void *input);

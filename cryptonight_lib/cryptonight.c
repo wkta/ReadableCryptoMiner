@@ -87,7 +87,6 @@ extern int fast_aesb_pseudo_round_mut(uint8_t *val, uint8_t *expandedKey);
 #define fast_aesb_pseudo_round_mut aesb_pseudo_round_mut
 #endif
 
-#if defined(NOASM) || !defined(__x86_64__)
 static uint64_t mul128(uint64_t multiplier, uint64_t multiplicand, uint64_t* product_hi) {
 	// multiplier   = ab = a * 2^32 + b
 	// multiplicand = cd = c * 2^32 + d
@@ -113,9 +112,6 @@ static uint64_t mul128(uint64_t multiplier, uint64_t multiplicand, uint64_t* pro
 
 	return product_lo;
 }
-#else
-extern uint64_t mul128(uint64_t multiplier, uint64_t multiplicand, uint64_t* product_hi);
-#endif
 
 static void (* const extra_hashes[4])(const void *, size_t, char *) = {
 		do_blake_hash, do_groestl_hash, do_jh_hash, do_skein_hash
@@ -236,13 +232,6 @@ static void cryptonight_hash_ctx(void* output, const void* input, int len, struc
 	extra_hashes[ctx->state.hs.b[0] & 3](&ctx->state, 200, output);
 	oaes_free((OAES_CTX **) &ctx->aes_ctx);
 }
-
-
-#if defined(_WIN32)
-#define LIB_EXPORT __declspec(dllexport)
-#else // _WIN32
-#define LIB_EXPORT
-#endif
 
 LIB_EXPORT void cryptonight_hash(void* output, void* input, int len) {
 	struct cryptonight_ctx *ctx = (struct cryptonight_ctx*)malloc(sizeof(struct cryptonight_ctx));

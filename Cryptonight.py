@@ -62,8 +62,14 @@ class Subscription(object):
 		return '<Subscription id={}, worker_name={}>'.format(self.id, self.worker_name)
 
 ##############
+import os
 import ctypes
-lib = ctypes.cdll.LoadLibrary('cryptonight_lib/project/Release/cryptonight_lib.dll')
+
+if os.name == 'nt':
+	lib = ctypes.cdll.LoadLibrary('cryptonight_lib/project/Release/cryptonight_lib.dll')
+else:
+	lib = ctypes.cdll.LoadLibrary('cryptonight_lib/libcryptonight_lib.so')
+
 c_pow = lib.cryptonight_hash
 c_pow.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 
@@ -81,3 +87,4 @@ class SubscriptionCryptonight(Subscription):
 	'''Subscription for Cryptonight-based coins, like XMR (Monero).'''
 
 	ProofOfWork = lambda s, h: (cryptonight_proof_of_work(h))
+

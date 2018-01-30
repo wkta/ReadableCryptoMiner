@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5)
 project (cryptonight_lib)
 
 include_directories(
@@ -22,9 +22,6 @@ set (HEADER_FILES
 	crypto/oaes_config.h
 	crypto/skein_port.h
 	crypto/sph_types.h
-
-	compat/compat.h
-	compat/time.h
 )
 
 set (SOURCE_FILES
@@ -38,12 +35,24 @@ set (SOURCE_FILES
 	crypto/c_skein.c
 	crypto/hash.c
 	crypto/oaes_lib.c
-
-	compat/gettimeofday.c
 )
 
-add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+if(WIN32)
+	set(HEADER_FILES
+		${HEADER_FILES}
+		compat/compat.h
+		compat/time.h
+	)
+
+	set (SOURCE_FILES
+		${SOURCE_FILES}
+		compat/gettimeofday.c
+	)
+
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
 
 add_library(cryptonight_lib SHARED 
 	${HEADER_FILES}
 	${SOURCE_FILES})
+
