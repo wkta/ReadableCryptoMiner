@@ -20,4 +20,7 @@ I may try to implement a miner only in C.
       -t THREAD, --thread THREAD       number of mining threads to start
       -d, --debug                      show extra debug information
   
+  ## License
   
+  The python code is MIT.
+  The C code (cryptonight librarie) is GPL, see https://github.com/LysanderGG/Simple-XMR-Miner/blob/master/cryptonight_lib/COPYING
