@@ -1,11 +1,10 @@
-# Simple-XMR-Miner
+# ReadableCryptoMiner
 
-Monero CPU miner written in python3 for learning purpose.
+Monero CPU miner fully written in python3, for learning purpose only!
 Heavily inspired from https://github.com/ricmoo/nightminer/ but uses JSON RPC 2.0 and cryptonight algorithm.
 
-The miner is in python 3, the hash function is in C (see the folder cryptonight_lib/)
-It is slow, about 40% of best miners on my system.
-I may try to implement a miner only in C.
+The miner is fully written in python 3.
+**It is extremely slow and therefore not suited for mercantile use.**
 
 ## Command Line Interface
 
@@ -20,7 +19,6 @@ I may try to implement a miner only in C.
       -t THREAD, --thread THREAD       number of mining threads to start
       -d, --debug                      show extra debug information
   
-  ## License
-  
-  The python code is MIT.
-  The C code (cryptonight librarie) is GPL, see https://github.com/LysanderGG/Simple-XMR-Miner/blob/master/cryptonight_lib/COPYING
+## License
+
+The code is licensed under MIT + LGPLv3, see LICENSE file for more info.
