@@ -46,6 +46,8 @@ if __name__ == '__main__':
 	if options.debug: 
 		Utils.DEBUG = True
 
-	miner = Miner(options.url, options.username, options.password, options.algo, int(options.thread))
-	miner.serve_forever()
-	
+	if options.url:
+		miner = Miner(options.url, options.username, options.password, options.algo, int(options.thread))
+		miner.serve_forever()
+	else:
+		parser.print_help()

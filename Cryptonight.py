@@ -61,24 +61,18 @@ class Subscription(object):
 	def __str__(self):
 		return '<Subscription id={}, worker_name={}>'.format(self.id, self.worker_name)
 
-##############
-import os
-import ctypes
 
-if os.name == 'nt':
-	lib = ctypes.cdll.LoadLibrary('cryptonight_lib/project/Release/cryptonight_lib.dll')
-else:
-	lib = ctypes.cdll.LoadLibrary('cryptonight_lib/libcryptonight_lib.so')
-
-c_pow = lib.cryptonight_hash
-c_pow.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_int]
+from crypto_primitives.slow_hash_lgplv3 import slow_hash_glue_func
 
 
+c_pow = slow_hash_glue_func
 def cryptonight_proof_of_work(data):
-	output = ctypes.create_string_buffer(32)
-
-	c_pow(output, data, 76)
-	outputhex =  binascii.hexlify(output).decode() #TODO: move outside?
+	output = [None for k in range(32)]  # create a buffer (list type)
+	
+	intli_form_data = list(data)
+	c_pow(output, intli_form_data, 76)  # 76 is the input buffer len
+	binstr_form_output = bytes(output)
+	outputhex =  binascii.hexlify(binstr_form_output).decode() #TODO: move outside?
 
 	return outputhex
 

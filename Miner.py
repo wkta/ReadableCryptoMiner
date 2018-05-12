@@ -61,7 +61,8 @@ class Miner(JsonRpc2Client):
 
 
 	def _handle_job(self, reply):
-		if "params" not in reply or len(reply["params"]) != 3:
+		expected_params_len = 4
+		if "params" not in reply or len(reply["params"]) != expected_params_len:
 			raise self.MinerWarning("Malformed job message", reply)
 
 		self._handle_job_msg(reply["params"])
@@ -109,14 +110,14 @@ class Miner(JsonRpc2Client):
 		)
 
 		def run(job, nonce_start, nonce_stride):
-			try:
-				for result in job.mine(nonce_start=nonce_start, nonce_stride=nonce_stride):
-					self.send(method = "submit", params = result)
-					self._submitted_shares += 1
-					log("Found share: " + str(result), LEVEL_DEBUG)
-					log("Hashrate: {}".format(human_readable_hashrate(job.hashrate)), LEVEL_INFO)
-			except Exception as e:
-				log("ERROR: {}".format(e), LEVEL_ERROR)
+			#try:
+			for result in job.mine(nonce_start=nonce_start, nonce_stride=nonce_stride):
+				self.send(method = "submit", params = result)
+				self._submitted_shares += 1
+				log("Found share: " + str(result), LEVEL_DEBUG)
+				log("Hashrate: {}".format(human_readable_hashrate(job.hashrate)), LEVEL_INFO)
+			#except Exception as e:
+			#	log("ERROR: {}".format(e), LEVEL_ERROR)
 
 		for n in range(self.nb_threads):
 			thread = threading.Thread(target=run, args=(self._job, n, self.nb_threads))
@@ -125,9 +126,12 @@ class Miner(JsonRpc2Client):
 
 
 	def serve_forever(self):
-		url = urllib.parse.urlparse(self._url)
-		hostname = url.hostname or ''
-		port = url.port
+		# quick 'n' dirty url parsing
+		# assumed format is:
+		# stratum + tcp://foobar.com:3333
+		tmp = self._url.split('//')[1]
+		hostname, port = tmp.split(':')
+		port = int(port)  # type casting
 
 		log("Starting server on {}:{}".format(hostname, port), LEVEL_INFO)
 
