@@ -55,11 +55,19 @@ class Miner(JsonRpc2Client):
 
         log("New job: job_id={} - difficulty={}".format(job_id, difficulty), LEVEL_DEBUG)
 
-    def _handle_job(self, reply):
-        expected_params_len = 4
-        if "params" not in reply or len(reply["params"]) != expected_params_len:
-            raise self.MinerWarning("Malformed job message", reply)
+    @staticmethod
+    def _testif_job_msg_matches_spec(given_jobmsg):
+        if "params" not in given_jobmsg:
+            return False
+        params = given_jobmsg["params"]
+        for exp_key in ("blob", "job_id", "target", "height", "seed_hash"):
+            if exp_key not in params:
+                return False
+        return True
 
+    def _handle_job(self, reply):
+        if not Miner._testif_job_msg_matches_spec(reply):
+            raise self.MinerWarning("Malformed job message", reply)
         self._handle_job_msg(reply["params"])
 
     def _handle_submit(self, reply, request):

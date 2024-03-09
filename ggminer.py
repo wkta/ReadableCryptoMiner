@@ -14,9 +14,13 @@ from Utils import log, LEVEL_INFO
 
 
 def test_job(given_miner):
+    """
+    this tests only the old version of CryptoNight (before Cn/V4) and it shows how the miner
+    behaves when the share has been found properly.
+    """
     job_msg = {
         "blob": "0505ad91b1cb05473f162f06104953ab34112ea403d365f3e83f339c44328ca3dbd87ba7e62f4a00000000557056bfa4105\
-        abde09055edea9a0a5d3f333412a74bc96417a23bc68f8d73e405",
+abde09055edea9a0a5d3f333412a74bc96417a23bc68f8d73e405",
         "job_id": "488788125594146", "target": "285c8f02"
     }
 
@@ -35,12 +39,10 @@ def test_job(given_miner):
     for result in job.mine(nonce_start=0x24000000):
         log("Found share: " + str(result), LEVEL_INFO)
     log("end test job", LEVEL_INFO)
-
-
-expect = {
-    "id": "523289590119384", "job_id": "218283583596348", "nonce": "24000082",
-    "result": "df6911d024c62d910e53b012f6b8ed0eedfaf53f60819e261207d91044258202"
-}
+    # expected_result = {
+    #     "id": "523289590119384", "job_id": "218283583596348", "nonce": "24000082",
+    #     "result": "df6911d024c62d910e53b012f6b8ed0eedfaf53f60819e261207d91044258202"
+    # }
 
 
 if __name__ == '__main__':
@@ -62,6 +64,11 @@ if __name__ == '__main__':
 
     if options.url:
         miner = Miner(options.url, options.username, options.password, options.algo, int(options.thread))
+
+        # dummy test
+        # test_job(miner)
+        # sys.exit(1)
+
         miner.serve_forever()
     else:
         parser.print_help()
