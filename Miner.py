@@ -3,6 +3,7 @@ import socket
 import threading
 from Cryptonight import SubscriptionCryptonight
 from JsonRpc2Client import *
+import defs
 
 
 SubscriptionByAlgorithm = {
@@ -22,21 +23,16 @@ class Miner(JsonRpc2Client):
 
     def __init__(self, url, username, password, algorithm, nb_threads):
         JsonRpc2Client.__init__(self)
-
         self._url = url
         self._username = username
         self._password = password
         self.nb_threads = nb_threads
-
         self._subscription = SubscriptionByAlgorithm[algorithm]()
-
         self._job = None
-
         self._submitted_shares = 0
         self._accepted_shares = 0
 
     def handle_reply(self, request, reply):
-
         if reply.get("method") == "job":
             self._handle_job(reply)
         elif request:
@@ -76,13 +72,12 @@ class Miner(JsonRpc2Client):
 
     def _login(self):
         # TODO: define user agent properly
-        params = {"login": self._username, "pass": self._password, "agent": "GGMiner/0.1"}
+        params = {"login": self._username, "pass": self._password, "agent": defs.AGENT_LABEL}
         self.send(method="login", params=params)
 
     def _handle_login(self, reply):
         if "result" not in reply or "id" not in reply["result"]:
             raise self.MinerWarning('Reply to login is malformed', reply)
-
         result = reply["result"]
         identifier = result["id"]
         log("Login success. Subscription ID={}".format(identifier), LEVEL_DEBUG)
@@ -118,20 +113,20 @@ class Miner(JsonRpc2Client):
             thread.daemon = True
             thread.start()
 
-    def serve_forever(self):
-        # quick 'n' dirty url parsing
-        # assumed format is:
-        # stratum + tcp://foobar.com:3333
+    def serve_forever(self) -> None:
+        """
+        quick 'n' dirty url parsing
+        The assumed format for field self._url
+        is:
+        stratum+tcp://foobar.com:3333
+        """
         tmp = self._url.split('//')[1]
         hostname, port = tmp.split(':')
         port = int(port)  # type casting
-
         log("Starting server on {}:{}".format(hostname, port), LEVEL_INFO)
-
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((hostname, port))
         self.connect(sock)
         self._login()
-
         while True:
             time.sleep(10)
