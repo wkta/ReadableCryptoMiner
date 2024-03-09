@@ -1,5 +1,5 @@
 #!/usr/bin/env python 
-__author__ = "Patrik Lundin / Thomas Iwaszko"
+__author__ = "Patrik Lundin / Thomas Eder"
 __copyright__ = "Copyright 2018, nothisispatrik.com" 
 __license__ = "LGPL v3. Algorithms/constants may be (C) 2014-2018 The Monero project or (C) 2012-2014 The Cryptonote Developers. All code is original"
 __email__ = "patrik@nothisispatrik.com / thomas@gaudia-tech.com"
@@ -12,7 +12,7 @@ __doc__ = """
    with and without the 2018 April hard fork variant. 
    
    First version was written for Python 2.7 by Patrik Lundin,
-   port to Python 3.6 + several tweaks were brought by Thomas Iwaszko (wkta on github)
+   port to Python 3.6 + several tweaks were brought by Thomas Eder
 
    The cryptonight algorithm remains extremely slow,
    around 0.03 hashes per second on a regular i5 CPU.

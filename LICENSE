@@ -1,13 +1,13 @@
 Software License is MIT + LGPL-v3
 
 ReadableCryptoMiner source-code authors are:
-- Thomas Iwaszko
+- Thomas Eder
 - Guillaume George
 - Patrick Lundin
 
 Parts of the software distributed under the terms of the LGPL-v3 are:
 - all files belonging to the crypto_primitives module
-- contents of the pow_algorithms.Cryptonight.do_proof_of_work(...) method
+- contents of the pow_algorithms.Cryptonight.do_proof_of_work(...) method
 
 
 === MIT License ===

@@ -4,14 +4,13 @@
 #
 # This miner has been written for learning purpose only,
 # heavily inspired from https://github.com/ricmoo/nightminer/
-
-
 import argparse
 import math
 import sys
 
 import Utils
-from Miner import Miner, log, LEVEL_INFO
+from Miner import Miner
+from Utils import log, LEVEL_INFO
 
 
 def test_job(given_miner):
