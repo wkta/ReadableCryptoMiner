@@ -8,3 +8,5 @@ CMakeFiles/
 *.cmake
 *.log
 *.bat
+.idea/
+config.json
