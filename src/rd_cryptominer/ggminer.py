@@ -5,7 +5,6 @@
 # This miner has been written for learning purpose only,
 # heavily inspired from https://github.com/ricmoo/nightminer/
 import argparse
-import math
 import sys
 
 import Utils
@@ -24,17 +23,9 @@ abde09055edea9a0a5d3f333412a74bc96417a23bc68f8d73e405",
         "job_id": "488788125594146", "target": "285c8f02"
     }
 
-    blob = job_msg["blob"]
-    job_id = job_msg["job_id"]
-    target = job_msg["target"]
-    difficulty = math.floor((2 ** 32 - 1) / int(target, 16))
-
+    job_context = given_miner._subscription.prepare_job(job_msg)
     given_miner._subscription._id = "dummy"
-    job = given_miner._subscription.create_job(
-        job_id=job_id,
-        blob=blob,
-        target=target
-    )
+    job = given_miner._subscription.create_job(job_context)
     log("start test job", LEVEL_INFO)
     for result in job.mine(nonce_start=0x24000000):
         log("Found share: " + str(result), LEVEL_INFO)

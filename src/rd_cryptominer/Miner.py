@@ -1,4 +1,3 @@
-import math
 import socket
 import threading
 from Cryptonight import SubscriptionCryptonight
@@ -46,14 +45,15 @@ class Miner(JsonRpc2Client):
             raise Exception("Unknown message", reply, request)
 
     def _handle_job_msg(self, job_msg):
-        blob = job_msg["blob"]
-        job_id = job_msg["job_id"]
-        target = job_msg["target"]
-        target = "".join([target[i:i + 2] for i in range(0, len(target), 2)][::-1])
-        difficulty = math.floor((2 ** 32 - 1) / int(target, 16))
-        self._spawn_job_thread(job_id, blob, target)
+        job_context = self._subscription.prepare_job(job_msg)
+        difficulty = self._subscription.estimate_difficulty(job_context.target)
 
-        log("New job: job_id={} - difficulty={}".format(job_id, difficulty), LEVEL_DEBUG)
+        self._spawn_job_thread(job_context)
+
+        if difficulty is None:
+            log("New job: job_id={}".format(job_context.job_id), LEVEL_DEBUG)
+        else:
+            log("New job: job_id={} - difficulty={}".format(job_context.job_id, difficulty), LEVEL_DEBUG)
 
     @staticmethod
     def _testif_job_msg_matches_spec(given_jobmsg):
@@ -92,7 +92,7 @@ class Miner(JsonRpc2Client):
         self._subscription.set_subscription(identifier)
         self._handle_job_msg(result["job"])
 
-    def _spawn_job_thread(self, job_id, blob, target):
+    def _spawn_job_thread(self, job_context):
         """Stops any previous job and begins a new job."""
 
         # Stop the old job (if any)
@@ -100,11 +100,7 @@ class Miner(JsonRpc2Client):
             self._job.stop()
 
         # Create the new job
-        self._job = self._subscription.create_job(
-            job_id=job_id,
-            blob=blob,
-            target=target
-        )
+        self._job = self._subscription.create_job(job_context)
 
         def run(job, nonce_start, nonce_stride):
             # try:

@@ -308,44 +308,40 @@ def blake(data):
     return rv
 
 
-# dummy test on blake
-import sys
-values = [
-    b'98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa',
-    b'98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa'
-]
+def _debug_blake_demo():
+    """Legacy ad-hoc debug routine, intentionally not executed on import."""
+    import hashlib
 
-concat = ( int.from_bytes(values[0], byteorder="little")<< 8*100) + int.from_bytes(values[1], byteorder="little")
-x = concat.to_bytes(length=200, byteorder="little")
-print(len(list(x)))
-y = blake(list(x))
-print(y)
-print(len(y))
+    values = [
+        b'98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa',
+        b'98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa98231978eaff98231978eaffa'
+    ]
 
-print('-'*44)
-import hashlib
+    concat = (int.from_bytes(values[0], byteorder="little") << 8 * 100) + int.from_bytes(values[1], byteorder="little")
+    x = concat.to_bytes(length=200, byteorder="little")
+    print(len(list(x)))
+    y = blake(list(x))
+    print(y)
+    print(len(y))
 
-def blake2b_256(data):
-    # Using blake2b hash function with a 256-bit output
-    hash_obj = hashlib.blake2b(data, digest_size=32)  # 256 bits = 32 bytes
-    return hash_obj.digest()
+    print('-' * 44)
 
-def blake2b_512(data):
-    # Using blake2b hash function with a 512-bit output
-    hash_obj = hashlib.blake2b(data, digest_size=64)  # 512 bits = 64 bytes
-    return hash_obj.digest()
+    def blake2b_256(data):
+        hash_obj = hashlib.blake2b(data, digest_size=32)
+        return hash_obj.digest()
 
-# Example usage:
-data = b"Hello, world!"
-hashed_data = blake2b_256(data)
-print("Hashed data:", hashed_data.hex())
-print(len('b5da441cfe72ae042ef4d2b17742907f675de4da57462d4c3609c2e2ed755970'))
+    def blake2b_512(data):
+        hash_obj = hashlib.blake2b(data, digest_size=64)
+        return hash_obj.digest()
 
-# Example usage:
-hashed_data = blake2b_512(data)
-print("Hashed data:", hashed_data.hex())
-print(len('a2764d133a16816b5847a737a786f2ece4c148095c5faa73e24b4cc5d666c3e45ec271504e14dc6127ddfce4e144fb23b91a6f7b04b53d695502290722953b0f'))
-sys.exit(1)
+    data = b"Hello, world!"
+    hashed_data = blake2b_256(data)
+    print("Hashed data:", hashed_data.hex())
+    print(len('b5da441cfe72ae042ef4d2b17742907f675de4da57462d4c3609c2e2ed755970'))
+
+    hashed_data = blake2b_512(data)
+    print("Hashed data:", hashed_data.hex())
+    print(len('a2764d133a16816b5847a737a786f2ece4c148095c5faa73e24b4cc5d666c3e45ec271504e14dc6127ddfce4e144fb23b91a6f7b04b53d695502290722953b0f'))
 
 
     # Groestl hash. Assumes 200b input, produces 32b output

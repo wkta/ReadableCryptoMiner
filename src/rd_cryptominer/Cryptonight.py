@@ -1,83 +1,40 @@
-import binascii  # TODO: move outside ?
+import binascii
+import math
 
-from Job import Job
+from PowEngine import PowEngine, NonceLayout
+from Subscription import Subscription
 from crypto_primitives.slow_hash_lgplv3 import slow_hash_glue_func
 
 
-c_pow = slow_hash_glue_func
-
-
-# TODO: move into other file if another implementation is done
-# Subscription state
-class Subscription(object):
-    """Encapsulates the Subscription state from the JSON-RPC2 server"""
+class CryptonightVariant1Engine(PowEngine):
+    """
+    CryptoNight variant=1 engine (Apr 2018 era).
+    This preserves the repository's current hashing behavior.
+    """
 
     def __init__(self):
-        self._id = None
-        # self._difficulty = None
-        # self._target = None
-        self._worker_name = None
-        self._mining_thread = None
+        layout = NonceLayout(offset=39, size=4, endian="big", max_nonce=0x7fffffff)
+        PowEngine.__init__(self, name="cryptonight", nonce_layout=layout)
 
-    # Subclasses should override this
-    def ProofOfWork(self, header):
-        raise Exception('Do not use the Subscription class directly, subclass it')
+    def normalize_target(self, target):
+        # Pool target is little-endian hex; compare logic uses big-endian view.
+        return "".join([target[i:i + 2] for i in range(0, len(target), 2)][::-1])
 
-    class StateException(Exception):
-        pass
+    def estimate_difficulty(self, target):
+        return math.floor((2 ** 32 - 1) / int(target, 16))
 
-    @property
-    def id(self):
-        return self._id
+    def compute_pow(self, header):
+        output = [None for _ in range(32)]
+        slow_hash_glue_func(output, list(header), 76)
+        return binascii.hexlify(bytes(output)).decode()
 
-    @property
-    def worker_name(self):
-        return self._worker_name
-
-    # @property
-    # def difficulty(self): return self._difficulty
-    # @property
-    # def target(self): return self._target
-
-    def set_worker_name(self, worker_name):
-        if self._worker_name:
-            raise self.StateException('Already authenticated as %r (requesting %r)' % (self._username, username))
-        self._worker_name = worker_name
-
-    def set_subscription(self, subscription_id):
-        if self._id is not None:
-            raise self.StateException('Already subscribed')
-        self._id = subscription_id
-
-    def create_job(self, job_id, blob, target):
-        """Creates a new Job object populated with all the goodness it needs to mine"""
-
-        if self._id is None:
-            raise self.StateException('Not subscribed')
-
-        return Job(
-            subscription_id=self.id,
-            job_id=job_id,
-            blob=blob,
-            target=target,
-            proof_of_work=self.ProofOfWork
-        )
-
-    def __str__(self):
-        return '<Subscription id={}, worker_name={}>'.format(self.id, self.worker_name)
+    def share_value(self, pow_hash, target_len):
+        tar = pow_hash[-target_len:]
+        return "".join([tar[i:i + 2] for i in range(0, len(tar), 2)][::-1])
 
 
 class SubscriptionCryptonight(Subscription):
-    """Subscription for Cryptonight-based coins, like XMR (Monero)"""
+    """Subscription bound to the CryptoNight variant=1 engine."""
 
-    # overriden method
-    def ProofOfWork(self, header):
-        def cryptonight_proof_of_work(x):
-            output = [None for k in range(32)]  # create a buffer (list type)
-            intli_form_data = list(x)
-            c_pow(output, intli_form_data, 76)  # 76 is the input buffer len
-            binstr_form_output = bytes(output)
-            outputhex = binascii.hexlify(binstr_form_output).decode()  # TODO: move outside?
-            return outputhex
-
-        return cryptonight_proof_of_work(header)
+    def __init__(self):
+        Subscription.__init__(self, pow_engine=CryptonightVariant1Engine())
