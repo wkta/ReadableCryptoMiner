@@ -7,14 +7,19 @@ Educational Python 3 code for understanding Monero-era `CryptoNight` mining and 
 
 This project is **deprecated for real Monero mining**.
 
-Monero switched its Proof-of-Work algorithm from CryptoNight-family variants to **RandomX** on **2019-11-30** (network upgrade at block **1978433**). This repository still targets CryptoNight-era logic, so it is useful as a learning/reference project, not as a current XMR miner.
+Monero switched its Proof-of-Work algorithm from CryptoNight-family variants to **RandomX** on **2019-11-30** (network upgrade at block **1978433**).
+
+Strictly speaking, this repository implements a **CryptoNight variant=1 style path (Apr 2018 era)** and is **not** a RandomX miner. It is also **not** a complete CryptoNight v4 / CryptoNight-R implementation.
+
+Use this repository as educational/reference code only, not as a current XMR miner.
 
 ## Historical Context (Monero PoW)
 
-- 2018-04-06: network upgrade to CryptoNight variant 1 (`CNv1`)
-- 2018-10-18: network upgrade to CryptoNight variant 2 (`CNv2`)
-- 2019-03-09: network upgrade to CryptoNight-R (`CN/R`)
-- 2019-11-30: network upgrade to **RandomX** (current PoW family for Monero mainnet)
+1. CryptoNight v0 from genesis (block `0`, 2014-04-18)
+2. CryptoNight v1 at block `1546000` (2018-04-06)
+3. CryptoNight v2 at block `1685555` (2018-10-18)
+4. CryptoNight v3 / CryptoNight-R (`CN/R`, often called `CNv4` in miner tooling) at block `1788000` (2019-03-09)
+5. RandomX v0 at block `1978433` (2019-11-30)
 
 References:
 
@@ -26,7 +31,7 @@ References:
 
 - The code is intentionally readable and optimized for learning, not performance.
 - The implementation is CPU-only and very slow compared to production miners.
-- CLI currently exposes `--algo cryptonight` only.
+- CLI currently exposes `--algo cryptonight` only, with code paths tied to CryptoNight `variant=1` behavior.
 
 ## Command Line Interface
 
