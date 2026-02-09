@@ -1,62 +1,57 @@
 
 # ReadableCryptoMiner
 
-*The project is to write a fully functionnal XMR miner, in pure python 3.*
+Educational Python 3 code for understanding Monero-era `CryptoNight` mining and Stratum/JSON-RPC interactions.
 
-Why? Such a Monero CPU miner can be useful for for learning purpose.
+## Project Status
 
-The source-code provided is heavily inspired by:
-https://github.com/ricmoo/nightminer/ but I plan to use JSON RPC 2.0 and the
-new RandomX algorithm.
+This project is **deprecated for real Monero mining**.
 
-**Warning 1:**
-Initially Monero used the so-called CryptoNight PoW algorithm. The project was designed
-accordingly.
-But (as far as I know) from year 2019, November 30th monero uses the PoW algorithm:
-RandomX.
-The current miner needs to be patched in order to mine accordingly to the hard fork that
-occured. By now (2024, March) this is still a work-in-progress.
+Monero switched its Proof-of-Work algorithm from CryptoNight-family variants to **RandomX** on **2019-11-30** (network upgrade at block **1978433**). This repository still targets CryptoNight-era logic, so it is useful as a learning/reference project, not as a current XMR miner.
 
-**Warning 2:**
-This miner is extremely slow and therefore not suited for mercantile use.
+## Historical Context (Monero PoW)
 
+- 2018-04-06: network upgrade to CryptoNight variant 1 (`CNv1`)
+- 2018-10-18: network upgrade to CryptoNight variant 2 (`CNv2`)
+- 2019-03-09: network upgrade to CryptoNight-R (`CN/R`)
+- 2019-11-30: network upgrade to **RandomX** (current PoW family for Monero mainnet)
 
+References:
+
+- https://docs.getmonero.org/proof-of-work/cryptonight/
+- https://docs.getmonero.org/proof-of-work/random-x/
+- https://github.com/tevador/RandomX
+
+## Scope and Limitations
+
+- The code is intentionally readable and optimized for learning, not performance.
+- The implementation is CPU-only and very slow compared to production miners.
+- CLI currently exposes `--algo cryptonight` only.
 
 ## Command Line Interface
 
-    ggminer.py [-h] [-a {cryptonight}] [-o URL] [-u USERNAME] [-p PASSWORD] [-t THREAD] [-d DEBUG]
+```text
+ggminer.py [-h] [-a {cryptonight}] [-o URL] [-u USERNAME] [-p PASSWORD] [-t THREAD] [-d DEBUG]
 
-    optional arguments:
-      -h, --help                       show this help message and exit
-      -a, --algo                       hashing algorithm to use for proof of work {cryptonight}
-      -o URL, --url URL                stratum mining server url (eg: stratum+tcp://foobar.com:3333)
-      -u USERNAME, --user USERNAME     username for mining server
-      -p PASSWORD, --pass PASSWORD     password for mining server
-      -t THREAD, --thread THREAD       number of mining threads to start
-      -d, --debug                      show extra debug information
-
-Example of possible mining pools:
-
-- Location	| Server  Host	| Stratum Port	| SSL/TLS Port
-- Europe	xmr-eu1.nanopool.org	10300	10343
-- Europe	xmr-eu2.nanopool.org	10300	10343
-- US East	xmr-us-east1.nanopool.org	10300	10343
-- US West	xmr-us-west1.nanopool.org	10300	10343
-- Asia	xmr-asia1.nanopool.org	10300	10343
-- Japan	xmr-jp1.nanopool.org	10300	10343
-- Australia	xmr-au1.nanopool.org	10300	10343
-
-Using a SSL connection is highly recommended. It's
-more safe and stable than stratum.
-
-## Dive in head first
-
-To get started easily you can, for example, use the command line:
-```shell
-python ggminer.py --url stratum+tcp://xmr-eu1.nanopool.org:10300 --debug 2
+optional arguments:
+  -h, --help                       show this help message and exit
+  -a, --algo                       hashing algorithm to use for proof of work {cryptonight}
+  -o URL, --url URL                stratum mining server url (e.g. stratum+tcp://foobar.com:3333)
+  -u USERNAME, --user USERNAME     username for mining server
+  -p PASSWORD, --pass PASSWORD     password for mining server
+  -t THREAD, --thread THREAD       number of mining threads to start
+  -d, --debug                      show extra debug information
 ```
 
-## Structure the config file:
+## Quick Start (Legacy Demo)
+
+```shell
+python src/rd_cryptominer/ggminer.py --url stratum+tcp://example.com:3333 --debug 2
+```
+
+Use this as a protocol/hash experimentation entry point, not for production mining.
+
+## Config File Format
 
 ```json
 {
@@ -66,7 +61,6 @@ python ggminer.py --url stratum+tcp://xmr-eu1.nanopool.org:10300 --debug 2
 }
 ```
 
-
 ## License
 
-The code is licensed under MIT + LGPLv3, see LICENSE file for more info.
+The code is licensed under MIT + LGPLv3. See `LICENSE` for details.
